@@ -1,0 +1,111 @@
+// apps/api/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  // We leave the output line out so it goes to the default safe location
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // <--- This connects to your .env file
+}
+
+// --- USER & ROLES ---
+enum Role {
+  BUYER
+  ARTIST
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Will be hashed
+  fullName  String
+  role      Role     @default(BUYER)
+  createdAt DateTime @default(now())
+
+  artistProfile ArtistProfile?
+  orders        Order[]
+  reviews       Review[]
+}
+
+model ArtistProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  bio         String
+  portfolio   String[] // Array of image URLs
+  user        User     @relation(fields: [userId], references: [id])
+  
+  products    Product[]
+  categories  Category[] // Many-to-Many: Artist can specialize in multiple types
+}
+
+// --- MASTER TAXONOMY ---
+model Category {
+  id          String    @id @default(uuid())
+  name        String    // e.g. "Fine Arts" or "Mandala"
+  slug        String    @unique // e.g. "fine-arts"
+  image       String?   // Path to your local image
+  
+  parentId    String?   
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+
+  products    Product[]
+  artists     ArtistProfile[]
+}
+
+// --- PRODUCTS & COMMISSIONS ---
+enum ProductType {
+  PHYSICAL
+  DIGITAL
+  COMMISSION
+  SERVICE
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  price       Decimal
+  type        ProductType
+  images      String[]    
+  
+  artistId    String
+  artist      ArtistProfile @relation(fields: [artistId], references: [id])
+  
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  userId      String
+  total       Decimal
+  status      String      @default("PENDING")
+  createdAt   DateTime    @default(now())
+  
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  price     Decimal
+  
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id        String @id @default(uuid())
+  rating    Int
+  comment   String
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
+}
