@@ -41,5 +41,4 @@ A full-stack platform connecting artists, students, and art therapy seekers. Thi
 * Payment Gateway Integration (Stripe).
 * Live Zoom integration for Therapy sessions.
 
----
-*Developed by [Your Name]*
+
