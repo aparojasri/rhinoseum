@@ -1,6 +1,6 @@
 # 🎨 RHINOSEUM
 
-A full-stack platform connecting artists, students, and art therapy seekers. This project implements a dual-sided marketplace structure and an education hub.
+A full-stack platform connecting art, science and tech enthusiasts, students, and everyone. This project implements a dual-sided marketplace structure and an education hub.
 
 **Current Status:** High-Fidelity MVP (Functional UI + Backend Data Layer)
 
