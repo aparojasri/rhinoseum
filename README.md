@@ -1,4 +1,4 @@
-# 🎨 RHINOSEUM- Art Ecosystem Platform (MVP)
+# 🎨 RHINOSEUM
 
 A full-stack platform connecting artists, students, and art therapy seekers. This project implements a dual-sided marketplace structure and an education hub.
 
